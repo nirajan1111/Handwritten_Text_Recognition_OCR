@@ -32,8 +32,9 @@ The models are trained on the **IAM Handwriting Dataset**, which contains handwr
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/your-repo-url.git
-    cd 
+    git clone git remote add origin https://github.com/nirajan1111/Handwritten_Text_Recognition_OCR.git
+
+    cd Handwritten_Text_Recognition_OCR
     ```
 
 2. Set up a virtual environment and install the dependencies:
