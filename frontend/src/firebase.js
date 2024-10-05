@@ -1,13 +1,13 @@
 import firebase from "firebase";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCyD1j9uM5pVCxyCndBnzbrMUvRItNqfTc",
-  authDomain: "classroom-b1d4b.firebaseapp.com",
-  projectId: "classroom-b1d4b",
-  storageBucket: "classroom-b1d4b.appspot.com",
-  messagingSenderId: "338650819571",
-  appId: "1:338650819571:web:0b85e9801b97dfdac14086",
-  measurementId: "G-K3TJ1TL7FN"
+  apiKey: "",
+  authDomain: "",
+  projectId: "",
+  storageBucket: "",
+  messagingSenderId: "",
+  appId: "",
+  measurementId: ""
 };
 
 const app = firebase.initializeApp(firebaseConfig);
