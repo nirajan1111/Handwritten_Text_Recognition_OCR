@@ -5,14 +5,7 @@ import numpy as np
 import os
 
 model =YOLO("./model/model.pt")
-# image_path = "a01-011_png.rf.e60919355122a00f35632629ede8b21a.jpg"
-# Load image from file
 
-# Inference
-# img = cv2.imread("images.png")
-# resized_img = cv2.resize(img, (640, 640))
-# resized_img = cv2.cvtColor(resized_img, cv2.COLOR_BLACK2WHITE)
-# cv2.imwrite("resized_image.png", resized_img)
 
 def sort_boxes_by_rows_dynamic_threshold(boxes):
     """
@@ -102,40 +95,3 @@ def save_detected_image(image_path, output_folder):
         
         print(f"Word {i} saved to {cropped_img_path}")
 
-
-# results = model(image_path)
-# img = cv2.imread(image_path)
-# # print(results[0].boxes)
-
-# # img_with_boxes = results[0].plot()
-
-# # # Display the image using Matplotlib
-# # plt.figure(figsize=(10, 10))
-# # plt.imshow(img_with_boxes)
-# # plt.axis('off')  # Hide axes for better visualization
-# # plt.show()
-
-# # print(type(results[0].boxes.xyxy[0].numpy()))
-# boxes=results[0].boxes.xyxy.numpy()
-# sorted_boxes = sort_boxes_by_rows_dynamic_threshold(boxes)
-
-# if('detected_word' not in os.listdir()):
-#     os.mkdir('detected_word')
-# list_img=os.listdir('detected_word')
-# if(len(list_img)!=0):
-#     for img_ in list_img:
-#         os.remove(f'detected_word/{img_}')
-
-# for i, box in enumerate(sorted_boxes):
-#     # Extract coordinates (x_min, y_min, x_max, y_max)
-#     x_min, y_min, x_max, y_max = map(int, box)
-    
-#     # Crop the image using the bounding box coordinates
-#     cropped_img = img[y_min:y_max, x_min:x_max]
-    
-#     # Save the cropped image to a folder
-#     cropped_img_path = f'detected_word/word_{i}.png'
-   
-#     cv2.imwrite(cropped_img_path, cropped_img)
-
-#     print(f"Word {i} saved to {cropped_img_path}")

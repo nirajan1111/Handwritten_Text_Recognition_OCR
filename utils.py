@@ -1,176 +1,94 @@
-import os
 import tensorflow as tf
-# from tensorflow.keras.callbacks import ModelCheckpoint
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 import re
-needed=['[UNK]',
- '-',
- 'r',
- 'w',
- 'S',
- 'D',
- 'Z',
- 'Q',
- 'J',
- 'I',
- '9',
- '0',
- 'j',
- 'F',
- 'o',
- 'L',
- 'n',
- 'f',
- 'M',
- 'g',
- 'e',
- 'Y',
- 'u',
- 'R',
- 'q',
- ':',
- 'P',
- 'V',
- ';',
- 'A',
- '?',
- '+',
- 'a',
- 'b',
- 'K',
- '4',
- 'B',
- 'h',
- 'O',
- 'N',
- '&',
- ',',
- 't',
- 'C',
- '/',
- 'd',
- 'H',
- 'T',
- '#',
- '5',
- '3',
- '6',
- '"',
- 's',
- 'l',
- 'E',
- 'x',
- 'c',
- '7',
- 'p',
- 'z',
- 'W',
- 'X',
- ')',
- "'",
- '1',
- '2',
- 'y',
- '*',
- '8',
- '(',
- '!',
- 'U',
- 'G',
- 'k',
- '.',
- 'i',
- 'v',
- 'm']
-
 
 mapping=['[UNK]',
- '.',
- '9',
- 'I',
- '8',
- 'j',
- 'y',
- 'q',
- 'Y',
- 'T',
- 'N',
- 'z',
- '&',
- 't',
- 'h',
- '!',
- '0',
- '2',
- 'X',
- 'V',
- '4',
- '+',
- ')',
- 'W',
- 'E',
+ "'",
+ 'Z',
+ 'G',
+ 'e',
  'b',
- 'J',
- '?',
+ 'E',
  'Q',
+ 't',
+ 'd',
+ '6',
+ 'N',
+ 'X',
+ 'p',
+ '+',
+ '-',
+ 'w',
+ 'g',
+ 'j',
+ 'S',
+ 'u',
+ '8',
+ 'n',
+ '!',
  'B',
- 'R',
- 'v',
- 'm',
  'P',
- ',',
- '/',
+ 'a',
+ 'o',
  'M',
+ 'r',
+ '5',
+ 'W',
+ 'O',
+ '3',
+ 'k',
+ 'A',
+ 'h',
  'c',
  'D',
- '#',
- 'G',
- 'g',
- 'e',
- 'l',
- 'K',
- 'o',
- 'p',
- "'",
- 'a',
- '7',
- '"',
- 'u',
- 'A',
- '(',
- 'w',
- 'r',
- ';',
- 'x',
- 'C',
- 'S',
  'i',
- 'H',
- '-',
- 'k',
- '*',
- '1',
+ '0',
+ 'C',
+ 'q',
+ 'V',
  'U',
- 'L',
- 'd',
- '5',
- '3',
- '6',
- 's',
+ 'T',
+ '4',
+ '7',
+ 'v',
+ 'I',
  'F',
+ ')',
+ '/',
+ 'R',
+ ',',
+ '?',
+ 'K',
+ '#',
+ 'l',
+ '.',
+ '1',
  ':',
- 'O',
+ 'J',
+ 'x',
+ 'y',
+ ';',
+ 's',
+ 'L',
+ '*',
+ '2',
+ '"',
+ 'Y',
+ 'z',
+ '&',
+ 'H',
+ '9',
  'f',
- 'Z',
- 'n']
+ '(',
+ 'm']
 char_to_index_dict = {char: idx for idx, char in enumerate(mapping)}
 
 index_to_char_dict = {idx: char for idx, char in enumerate(mapping)}
 
 def char_to_index(char):
-    return char_to_index_dict.get(char, char_to_index_dict['[UNK]'])  # Return [UNK] index if char not found
+    return char_to_index_dict.get(char, char_to_index_dict['[UNK]'])
 
 def index_to_char(index):
     return index_to_char_dict.get(index, '[UNK]')
@@ -197,11 +115,10 @@ def sort_natural(file_list):
 
 def distortion_free_resize(image, img_size):
     w, h = img_size
-    image = tf.image.resize(image, size=(h, w), preserve_aspect_ratio=True)  # size parameter takes height first and then width
+    image = tf.image.resize(image, size=(h, w), preserve_aspect_ratio=True)  
     pad_height = h - tf.shape(image)[0]
     pad_width = w - tf.shape(image)[1]
 
-    # Only necessary if you want to do some amount of padding on both sides.
     if pad_height % 2 != 0:
         height = pad_height // 2
         pad_height_top = height + 1
@@ -226,7 +143,6 @@ def distortion_free_resize(image, img_size):
     )
     image = tf.transpose(image, perm=[1, 0, 2])
     image = tf.image.flip_left_right(image)
-    # because tf.resize uses (h, w) way
     return image
 
 def processed(image_path):
@@ -237,9 +153,9 @@ def processed(image_path):
 
 def preprocessing_image(image_path, img_size=(image_width, image_height)):
     image = tf.io.read_file(image_path)
-    image = tf.image.decode_png(image, channels=1)  # decode the png_encoded images into tensor, channel 1 for gray scale
+    image = tf.image.decode_png(image, channels=1) 
     image = distortion_free_resize(image, img_size)
-    image = tf.cast(image, tf.float32) / 255.0  # data type conversion in tensor
+    image = tf.cast(image, tf.float32) / 255.0  
     return image
 
 
@@ -331,28 +247,6 @@ class DummyModel:
     def predict(self, word_image):
         return "word"
 
-# def recognize_text_in_lines(image_path, model):
-#     binary_image = preprocess_image(image_path)
-#     segmented_lines = [binary_image[start:end, :] for start, end in segment_lines(binary_image)]
-#     full_text = ""
-#     word_count=0
-#     for line_image in segmented_lines:
-#         line_image= invert_colors(line_image)
-#         words = segment_words(line_image)
-#         line_text = ""
-#         for start, end in words:
-#             word_image = line_image[:, start:end]
-#             word_image_path = f'uploads/word_{word_count + 1}.png'
-#             cv2.imwrite(word_image_path, word_image)
-#             word_image=processed(word_image_path)
-#             word_count += 1
-#             word_text = model.predict(np.expand_dims(word_image, axis=0))  # Predict
-#             print(word_text)  
-#             word_text=decode_batch_prediction(word_text)
-
-#             line_text += word_text[0] + " "
-#         full_text += line_text.strip() + "\n"
-#     return full_text
 
 def recongize_text_from_already_segmented_image(image,model):
     word_text = model.predict(image)  
@@ -370,13 +264,4 @@ def display_segmented_lines(segmented_lines):
         plt.axis('off')
         plt.show()
 
-# Example usage
-image_path = 'uploads/Handwriting.png'
 
-# Display segmented lines
-
-
-# Recognize text using a dummy model
-# dummy_model = DummyModel()
-# recognized_text = recognize_text_in_lines(segmented_lines, dummy_model)
-# print(recognized_text)
